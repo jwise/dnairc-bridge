@@ -49,7 +49,7 @@ async def ircclient():
     def on_pubmsg(conn, e):
         nick,rest = e.source.split('!')
         if wsc is not None:
-            asyncio.ensure_future(wsc.send(f"{int(time())}\t{nick}\t{e.arguments[0]}"))
+            asyncio.ensure_future(wsc.send(f"{int(time())}\t{nick}@IRC\t{e.arguments[0]}"))
     
     ircconn.add_global_handler("welcome", on_connect)
     ircconn.add_global_handler("pubmsg", on_pubmsg)

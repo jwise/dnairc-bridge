@@ -21,19 +21,23 @@ ircconn = None
 
 async def websocketclient():
     global wsc
-    
+
     while True:
         wsc = await websockets.connect(DNA_WS, ssl = ssl_context, origin = DNA_WS, ping_interval = None)
+        caughtup = False
         async for i in wsc:
-            when,who,what = i.split('\t')
-            when = int(when)
-            if when > time() - 5:
-                print(when)
-                print(who)
-                print(what)
+            vs = i.split('\t')
+            if len(vs) == 3:
+                when,who,what = i.split('\t')
+                when = int(when)
+                if when > time() - 5 or caughtup:
+                    print(when)
+                    print(who)
+                    print(what)
+                    caughtup = True
             
-                if ircconn is not None:
-                    ircconn.privmsg(CHANNEL, f"<{who}> {what}")
+                    if ircconn is not None:
+                        ircconn.privmsg(CHANNEL, f"<{who}> {what}")
         wsc = None
 
 async def ircclient():
